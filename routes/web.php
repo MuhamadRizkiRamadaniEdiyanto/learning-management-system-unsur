@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
@@ -29,6 +30,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return 'Selamat datang di Dashboard Admin LMS. Ini adalah halaman Admin.';
     })->name('admin.dashboard');
+
+    Route::resource('courses', CourseController::class)
+        ->only(['create', 'store', 'destroy']);
 });
 
 // ==========================================
@@ -51,6 +55,15 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
 // Modul tugas dan pengumpulan menggunakan response JSON untuk client web/API.
 Route::middleware('auth')->group(function () {
+    Route::resource('courses', CourseController::class)
+        ->only(['index', 'show', 'edit', 'update']);
+
+    Route::post('courses/{course}/enroll', [CourseController::class, 'enroll'])
+        ->name('courses.enroll');
+
+    Route::delete('courses/{course}/enroll/{user}', [CourseController::class, 'unenroll'])
+        ->name('courses.unenroll');
+
     Route::resource('courses.assignments', AssignmentController::class)
         ->only(['index', 'show'])
         ->scoped();
