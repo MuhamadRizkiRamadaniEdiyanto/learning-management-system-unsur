@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,10 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'show'])
         ->scoped();
 
+    Route::resource('courses.materials', MaterialController::class)
+        ->only(['index', 'show'])
+        ->scoped();
+
     Route::resource('assignments.submissions', SubmissionController::class)
         ->only(['index', 'show'])
         ->scoped();
@@ -63,6 +68,14 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::resource('courses.assignments', AssignmentController::class)
         ->except(['index', 'show'])
         ->scoped();
+
+    Route::resource('courses.materials', MaterialController::class)
+        ->except(['index', 'show'])
+        ->scoped();
+
+    Route::get('courses/{course}/materials/{material}/download', [MaterialController::class, 'download'])
+        ->scopeBindings()
+        ->name('courses.materials.download');
 
     Route::post('assignments/{assignment}/submissions/{submission}/grade', [SubmissionController::class, 'grade'])
         ->scopeBindings()
