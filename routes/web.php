@@ -59,6 +59,10 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'show'])
         ->scoped();
 
+    Route::get('courses/{course}/materials/{material}/download', [MaterialController::class, 'download'])
+        ->scopeBindings()
+        ->name('courses.materials.download');
+
     Route::resource('assignments.submissions', SubmissionController::class)
         ->only(['index', 'show'])
         ->scoped();
@@ -72,10 +76,6 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::resource('courses.materials', MaterialController::class)
         ->except(['index', 'show'])
         ->scoped();
-
-    Route::get('courses/{course}/materials/{material}/download', [MaterialController::class, 'download'])
-        ->scopeBindings()
-        ->name('courses.materials.download');
 
     Route::post('assignments/{assignment}/submissions/{submission}/grade', [SubmissionController::class, 'grade'])
         ->scopeBindings()
