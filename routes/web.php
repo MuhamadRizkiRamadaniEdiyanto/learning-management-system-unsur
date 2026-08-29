@@ -54,9 +54,8 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
 // RUTE KHUSUS MAHASISWA 
 // ==========================================
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
-    Route::get('/mahasiswa/dashboard', function () {
-        return 'Selamat datang di Ruang Kelas Mahasiswa. Ini adalah area belajar Anda.';
-    })->name('mahasiswa.dashboard');
+    Route::get('/mahasiswa/dashboard', [\App\Http\Controllers\MahasiswaDashboardController::class, 'index'])->name('mahasiswa.dashboard');
+    Route::get('/mahasiswa/submissions', [\App\Http\Controllers\SubmissionController::class, 'mySubmissions'])->name('mahasiswa.submissions');
 });
 
 // Modul tugas dan pengumpulan menggunakan response JSON untuk client web/API.

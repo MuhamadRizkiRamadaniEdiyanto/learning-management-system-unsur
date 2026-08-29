@@ -22,9 +22,13 @@ class CourseController extends Controller
         $this->authorize('viewAny', Course::class);
         $user = $request->user();
 
-        $courses = $user && $user->role === 'dosen'
-            ? $this->service->getByDosen((int) $user->id)
-            : $this->service->paginate($request->query('search'));
+        if ($user->role === 'admin') {
+            $courses = $this->service->paginate($request->query('search'));
+        } elseif ($user->role === 'dosen') {
+            $courses = $this->service->getByDosen((int) $user->id);
+        } else {
+            $courses = $this->service->getByMahasiswa((int) $user->id);
+        }
 
         return response()->json(['data' => $courses]);
     }

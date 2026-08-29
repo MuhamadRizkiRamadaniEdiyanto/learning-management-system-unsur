@@ -14,9 +14,19 @@ class CoursePolicy
 
     public function view(User $user, Course $course): bool
     {
-        return $user->role === 'admin'
-            || $user->role === 'mahasiswa'
-            || ($user->role === 'dosen' && (int) $course->dosen_id === (int) $user->id);
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        if ($user->role === 'dosen') {
+            return (int) $course->dosen_id === (int) $user->id;
+        }
+
+        if ($user->role === 'mahasiswa') {
+            return $course->mahasiswa()->whereKey($user->id)->exists();
+        }
+
+        return false;
     }
 
     public function create(User $user): bool

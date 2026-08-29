@@ -18,7 +18,12 @@ class AssignmentController extends Controller
     public function index(Course $course)
     {
         $this->authorize('viewAny', [Assignment::class, $course]);
-        return response()->json(['data' => $this->service->getByCourse($course)]);
+
+        $data = request()->user()->role === 'mahasiswa'
+            ? $this->service->getByCourseForMahasiswa($course, (int) request()->user()->id)
+            : $this->service->getByCourse($course);
+
+        return response()->json(['data' => $data]);
     }
 
     /**

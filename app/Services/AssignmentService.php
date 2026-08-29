@@ -21,6 +21,28 @@ class AssignmentService
         return $this->assignments->getByCourse($course->id);
     }
 
+    public function getByCourseForMahasiswa(Course $course, int $mahasiswaId): Collection
+    {
+        $assignments = $this->assignments->getByCourse($course->id);
+
+        return $assignments->map(function (Assignment $assignment) use ($mahasiswaId) {
+            $submission = $assignment->submissions()->where('user_id', $mahasiswaId)->first();
+
+            if ($submission) {
+                $status = $submission->nilai !== null ? 'sudah_dinilai' : 'sudah_dikumpulkan';
+                $nilai = $submission->nilai;
+            } else {
+                $status = now()->greaterThan($assignment->tenggat_waktu) ? 'terlambat' : 'belum_dikumpulkan';
+                $nilai = null;
+            }
+
+            $assignment->setAttribute('submission_status', $status);
+            $assignment->setAttribute('submission_nilai', $nilai);
+
+            return $assignment;
+        });
+    }
+
     public function findById(int $id): Assignment
     {
         return $this->assignments->findById($id);

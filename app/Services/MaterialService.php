@@ -32,7 +32,7 @@ class MaterialService
     {
         $this->ensureCourseOwner($course, $userId);
         $data['course_id'] = $course->id;
-        $data['file_path'] = $file->store('materials', 'public');
+        $data['file_path'] = $file->store('materials', 'local');
 
         return $this->materials->create($data);
     }
@@ -42,9 +42,8 @@ class MaterialService
         $this->ensureCourseOwner($material->course, $userId);
 
         if ($file) {
-            $newPath = $file->store('materials', 'public');
-            // Hapus file lama hanya setelah file baru berhasil disimpan.
-            Storage::disk('public')->delete($material->file_path);
+            $newPath = $file->store('materials', 'local');
+            Storage::disk('local')->delete($material->file_path);
             $data['file_path'] = $newPath;
         }
 
@@ -54,13 +53,13 @@ class MaterialService
     public function delete(Material $material, int $userId): bool
     {
         $this->ensureCourseOwner($material->course, $userId);
-        Storage::disk('public')->delete($material->file_path);
+        Storage::disk('local')->delete($material->file_path);
         return $this->materials->delete($material);
     }
 
     public function download(Material $material)
     {
-        $disk = Storage::disk('public');
+        $disk = Storage::disk('local');
         abort_unless($disk->exists($material->file_path), 404, 'File materi tidak ditemukan.');
 
         return response()->download($disk->path($material->file_path), basename($material->file_path));

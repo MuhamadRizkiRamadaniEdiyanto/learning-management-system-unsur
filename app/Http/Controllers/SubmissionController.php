@@ -24,6 +24,15 @@ class SubmissionController extends Controller
         return response()->json(['data' => $submissions]);
     }
 
+    public function mySubmissions()
+    {
+        abort_unless(request()->user()?->role === 'mahasiswa', 403, 'Akses hanya untuk mahasiswa.');
+
+        return response()->json([
+            'data' => $this->service->getByMahasiswa((int) request()->user()->id),
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
