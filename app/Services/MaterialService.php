@@ -28,11 +28,18 @@ class MaterialService
         return $this->materials->findById($id);
     }
 
-    public function create(Course $course, array $data, UploadedFile $file, int $userId): Material
+    public function create(Course $course, array $data, ?UploadedFile $file, int $userId): Material
     {
         $this->ensureCourseOwner($course, $userId);
         $data['course_id'] = $course->id;
-        $data['file_path'] = $file->store('materials', 'local');
+
+        if ($data['tipe_materi'] === 'youtube') {
+            $data['file_path'] = null;
+            $data['link_youtube'] = $data['link_youtube'] ?? null;
+        } elseif ($file) {
+            $data['file_path'] = $file->store('materials', 'local');
+            $data['link_youtube'] = null;
+        }
 
         return $this->materials->create($data);
     }
@@ -41,10 +48,22 @@ class MaterialService
     {
         $this->ensureCourseOwner($material->course, $userId);
 
-        if ($file) {
+        if (isset($data['tipe_materi']) && $data['tipe_materi'] === 'youtube') {
+            if ($material->file_path && Storage::disk('local')->exists($material->file_path)) {
+                Storage::disk('local')->delete($material->file_path);
+            }
+
+            $data['file_path'] = null;
+            $data['link_youtube'] = $data['link_youtube'] ?? $material->link_youtube;
+        } elseif ($file) {
             $newPath = $file->store('materials', 'local');
-            Storage::disk('local')->delete($material->file_path);
+
+            if ($material->file_path && Storage::disk('local')->exists($material->file_path)) {
+                Storage::disk('local')->delete($material->file_path);
+            }
+
             $data['file_path'] = $newPath;
+            $data['link_youtube'] = null;
         }
 
         return $this->materials->update($material, $data);
@@ -53,14 +72,23 @@ class MaterialService
     public function delete(Material $material, int $userId): bool
     {
         $this->ensureCourseOwner($material->course, $userId);
-        Storage::disk('local')->delete($material->file_path);
+
+        if ($material->file_path && Storage::disk('local')->exists($material->file_path)) {
+            Storage::disk('local')->delete($material->file_path);
+        }
+
         return $this->materials->delete($material);
     }
 
     public function download(Material $material)
     {
+        if ($material->tipe_materi === 'youtube') {
+            abort_unless(! empty($material->link_youtube), 404, 'Link materi YouTube tidak tersedia.');
+            return redirect()->away($material->link_youtube);
+        }
+
         $disk = Storage::disk('local');
-        abort_unless($disk->exists($material->file_path), 404, 'File materi tidak ditemukan.');
+        abort_unless($material->file_path && $disk->exists($material->file_path), 404, 'File materi tidak ditemukan.');
 
         return response()->download($disk->path($material->file_path), basename($material->file_path));
     }

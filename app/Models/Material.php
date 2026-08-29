@@ -9,12 +9,13 @@ class Material extends Model
 {
     use HasFactory;
 
-    // Menentukan kolom mana saja yang boleh diisi datanya (Mass Assignment)
     protected $fillable = [
         'course_id',
         'judul',
         'deskripsi',
-        'file_path'
+        'tipe_materi',
+        'file_path',
+        'link_youtube',
     ];
 
     /**

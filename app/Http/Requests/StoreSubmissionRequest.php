@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MaxUploadSize;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSubmissionRequest extends FormRequest
@@ -13,6 +14,8 @@ class StoreSubmissionRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['file_jawaban' => ['required', 'file', 'mimes:pdf,doc,docx,zip', 'max:10240']];
+        return [
+            'file_jawaban' => ['required', 'file', 'mimes:pdf,png', new MaxUploadSize()],
+        ];
     }
 }
