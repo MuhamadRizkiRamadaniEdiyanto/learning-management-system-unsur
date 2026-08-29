@@ -22,8 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'nomor_induk', // Ditambahkan untuk NIM/NIDN
-        'role',        // Ditambahkan untuk hak akses (admin, dosen, mahasiswa)
+        'nomor_induk',
+        'role',
+        'status_akun',
     ];
 
     /**

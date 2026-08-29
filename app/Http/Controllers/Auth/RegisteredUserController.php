@@ -32,20 +32,23 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'nomor_induk' => ['required', 'string', 'max:20', 'regex:/^\d{10,20}$/', 'unique:users,nomor_induk'],
+            'role' => ['required', 'in:dosen,mahasiswa'],
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->letters()->numbers()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'nomor_induk' => $request->nomor_induk,
+            'role' => $request->role,
+            'status_akun' => 'pending',
             'password' => Hash::make($request->password),
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with('status', 'Registrasi berhasil. Akun Anda sedang menunggu verifikasi admin.');
     }
 }

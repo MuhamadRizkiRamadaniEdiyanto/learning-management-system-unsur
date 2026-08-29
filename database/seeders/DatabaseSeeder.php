@@ -21,9 +21,10 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Administrator LMS',
             'email' => 'admin@unsur.ac.id',
-            'password' => Hash::make('password123'), // Password disandikan
+            'password' => Hash::make('password123'),
             'nomor_induk' => 'ADM-001',
             'role' => 'admin',
+            'status_akun' => 'aktif',
         ]);
 
         // 2. Akun Dosen
@@ -31,8 +32,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Budi Dosen, S.T., M.Kom.',
             'email' => 'dosen@unsur.ac.id',
             'password' => Hash::make('password123'),
-            'nomor_induk' => '0412345678', // NIDN Contoh
+            'nomor_induk' => '0412345678',
             'role' => 'dosen',
+            'status_akun' => 'aktif',
         ]);
 
         // 3. Akun Mahasiswa
@@ -40,8 +42,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Mahasiswa Teknik',
             'email' => 'mahasiswa@unsur.ac.id',
             'password' => Hash::make('password123'),
-            'nomor_induk' => '5520119001', // NIM Contoh
+            'nomor_induk' => '5520119001',
             'role' => 'mahasiswa',
+            'status_akun' => 'aktif',
         ]);
     }
 }

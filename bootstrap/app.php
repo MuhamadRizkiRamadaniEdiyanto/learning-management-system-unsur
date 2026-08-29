@@ -11,9 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Ini adalah bagian yang ditambahkan untuk mendaftarkan middleware 'role'
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'status' => \App\Http\Middleware\AccountStatusMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
