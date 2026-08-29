@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\User;
 use App\Services\CourseService;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -16,13 +17,15 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Course::class);
-        $user = request()->user();
-        $courses = $user->role === 'dosen'
+        $user = $request->user();
+
+        $courses = $user && $user->role === 'dosen'
             ? $this->service->getByDosen((int) $user->id)
-            : $this->service->all();
+            : $this->service->paginate($request->query('search'));
+
         return response()->json(['data' => $courses]);
     }
 
@@ -71,6 +74,19 @@ class CourseController extends Controller
         $this->authorize('update', $course);
         $updated = $this->service->update($course, $request->validated(), (int) $request->user()->id, $request->user()->role);
         return response()->json(['message' => 'Course berhasil diperbarui.', 'data' => $updated]);
+    }
+
+    public function assignDosen(Request $request, Course $course)
+    {
+        $this->authorize('assignDosen', $course);
+
+        $validated = $request->validate([
+            'dosen_id' => ['required', 'exists:users,id', 'integer'],
+        ]);
+
+        $course = $this->service->assignDosen($course, (int) $validated['dosen_id'], (int) $request->user()->id, $request->user()->role);
+
+        return response()->json(['message' => 'Dosen pengampu berhasil diperbarui.', 'data' => $course]);
     }
 
     /**

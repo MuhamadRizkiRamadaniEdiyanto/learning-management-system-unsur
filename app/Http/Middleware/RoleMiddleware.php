@@ -13,14 +13,16 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role): Response
+    public function handle(Request $request, Closure $next, mixed ...$roles): Response
     {
-        // Cek apakah user sudah login dan role-nya sesuai dengan yang diminta parameter
-        if ($request->user() && $request->user()->role === $role) {
+        if (! $request->user()) {
+            abort(403, 'Akses tidak diizinkan. Anda harus login terlebih dahulu.');
+        }
+
+        if (in_array($request->user()->role, $roles, true)) {
             return $next($request);
         }
 
-        // Jika tidak sesuai, tampilkan error 403 (Akses Ditolak)
         abort(403, 'Akses tidak diizinkan. Halaman ini bukan untuk Anda.');
     }
 }

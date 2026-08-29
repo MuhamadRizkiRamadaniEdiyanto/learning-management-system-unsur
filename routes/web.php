@@ -26,13 +26,19 @@ require __DIR__ . '/auth.php';
 // ==========================================
 // RUTE KHUSUS ADMIN LMS
 // ==========================================
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return 'Selamat datang di Dashboard Admin LMS. Ini adalah halaman Admin.';
-    })->name('admin.dashboard');
-
-    Route::resource('courses', CourseController::class)
-        ->only(['create', 'store', 'destroy']);
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('courses', CourseController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::patch('courses/{course}/assign-dosen', [CourseController::class, 'assignDosen'])->name('courses.assign-dosen');
+    Route::resource('dosen', \App\Http\Controllers\DosenController::class);
+    Route::resource('mahasiswa', \App\Http\Controllers\MahasiswaController::class);
+    Route::get('mahasiswa/{mahasiswa}/courses', [\App\Http\Controllers\MahasiswaController::class, 'courses'])->name('mahasiswa.courses');
+    Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
+    Route::get('reports/{jenis}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
+    Route::get('reports/mahasiswa-per-matkul', [\App\Http\Controllers\ReportController::class, 'jumlahMahasiswaPerMatkul'])->name('reports.mahasiswa-per-matkul');
+    Route::get('reports/nilai-per-matkul/{course}', [\App\Http\Controllers\ReportController::class, 'rekapNilaiPerMatkul'])->name('reports.nilai-per-matkul');
+    Route::get('reports/pengumpulan-tugas/{assignment}', [\App\Http\Controllers\ReportController::class, 'rekapPengumpulanTugas'])->name('reports.pengumpulan-tugas');
+    Route::get('reports/beban-mengajar', [\App\Http\Controllers\ReportController::class, 'bebanMengajarDosen'])->name('reports.beban-mengajar');
 });
 
 // ==========================================

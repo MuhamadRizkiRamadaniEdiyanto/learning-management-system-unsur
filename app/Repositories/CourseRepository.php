@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Course;
 use App\Repositories\Contracts\CourseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class CourseRepository implements CourseRepositoryInterface
@@ -11,6 +12,20 @@ class CourseRepository implements CourseRepositoryInterface
     public function all(): Collection
     {
         return Course::with('dosen')->latest()->get();
+    }
+
+    public function paginate(?string $search = null, int $perPage = 15): LengthAwarePaginator
+    {
+        $query = Course::query()->with('dosen');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('kode_matkul', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest()->paginate($perPage)->appends(['search' => $search]);
     }
 
     public function findById(int $id): Course

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Course;
 use App\Models\User;
 use App\Repositories\Contracts\CourseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class CourseService
@@ -14,6 +15,11 @@ class CourseService
     public function all(): Collection
     {
         return $this->courses->all();
+    }
+
+    public function paginate(?string $search = null, int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->courses->paginate($search, $perPage);
     }
 
     public function findById(int $id): Course
@@ -43,6 +49,16 @@ class CourseService
         return $this->courses->update($course, $data);
     }
 
+    public function assignDosen(Course $course, int $dosenId, int $actorId, string $actorRole): Course
+    {
+        $this->ensureAdmin($actorId, $actorRole);
+        abort_unless(User::whereKey($dosenId)->where('role', 'dosen')->exists(), 422, 'Dosen yang dipilih tidak valid.');
+
+        $course->update(['dosen_id' => $dosenId]);
+
+        return $course->refresh()->load('dosen');
+    }
+
     public function delete(Course $course, int $actorId, string $actorRole): bool
     {
         $this->ensureAdmin($actorId, $actorRole);
@@ -54,7 +70,6 @@ class CourseService
         $this->ensureEnrollmentActor($course, $actorId, $actorRole);
         abort_unless(User::whereKey($mahasiswaId)->where('role', 'mahasiswa')->exists(), 422, 'User harus ber-role mahasiswa.');
 
-        // Cegah mahasiswa yang sama terdaftar dua kali pada course yang sama.
         if (! $course->mahasiswa()->whereKey($mahasiswaId)->exists()) {
             $course->mahasiswa()->attach($mahasiswaId);
         }
