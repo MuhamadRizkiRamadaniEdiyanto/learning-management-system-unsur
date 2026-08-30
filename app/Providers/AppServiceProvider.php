@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Message;
 use App\Models\User;
 use App\Policies\DosenPolicy;
 use App\Policies\MahasiswaPolicy;
+use App\Policies\MessagePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\SchedulePolicy;
 use App\Policies\UserPolicy;
@@ -47,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Message::class, MessagePolicy::class);
 
         Gate::define('manage-dosen', [DosenPolicy::class, 'manage']);
         Gate::define('manage-mahasiswa', [MahasiswaPolicy::class, 'manage']);

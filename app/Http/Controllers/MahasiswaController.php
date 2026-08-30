@@ -70,4 +70,30 @@ class MahasiswaController extends Controller
             'data' => $this->service->courses($mahasiswa),
         ]);
     }
+
+    public function approve(User $mahasiswa)
+    {
+        $this->authorize('create', User::class);
+
+        if ($mahasiswa->role !== 'mahasiswa') {
+            return response()->json(['message' => 'User adalah bukan mahasiswa.'], 400);
+        }
+
+        $mahasiswa->update(['status_akun' => 'aktif']);
+
+        return response()->json(['message' => 'Akun mahasiswa berhasil disetujui.', 'data' => $mahasiswa]);
+    }
+
+    public function reject(User $mahasiswa, Request $request)
+    {
+        $this->authorize('create', User::class);
+
+        if ($mahasiswa->role !== 'mahasiswa') {
+            return response()->json(['message' => 'User adalah bukan mahasiswa.'], 400);
+        }
+
+        $mahasiswa->update(['status_akun' => 'ditolak']);
+
+        return response()->json(['message' => 'Akun mahasiswa berhasil ditolak.', 'data' => $mahasiswa]);
+    }
 }

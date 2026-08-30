@@ -52,11 +52,19 @@ class LoginRequest extends FormRequest
 
         $user = Auth::user();
 
-        if ($user && ! in_array($user->status_akun, ['aktif'], true)) {
+        if ($user && $user->status_akun === 'pending') {
             Auth::logout();
 
             throw ValidationException::withMessages([
-                'email' => 'Akun Anda sedang menunggu verifikasi admin.',
+                'email' => 'Akun Anda sedang menunggu verifikasi admin. Silakan tunggu beberapa saat.',
+            ]);
+        }
+
+        if ($user && $user->status_akun === 'ditolak') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda telah ditolak oleh admin. Hubungi administrator untuk informasi lebih lanjut.',
             ]);
         }
 

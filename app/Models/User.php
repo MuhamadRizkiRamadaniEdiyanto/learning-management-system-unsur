@@ -25,6 +25,7 @@ class User extends Authenticatable
         'nomor_induk',
         'role',
         'status_akun',
+        'foto_profil',
     ];
 
     /**

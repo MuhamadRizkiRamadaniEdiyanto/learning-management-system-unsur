@@ -61,4 +61,30 @@ class DosenController extends Controller
 
         return response()->json(['message' => 'Dosen berhasil dihapus.']);
     }
+
+    public function approve(User $dosen)
+    {
+        $this->authorize('create', User::class);
+
+        if ($dosen->role !== 'dosen') {
+            return response()->json(['message' => 'User adalah bukan dosen.'], 400);
+        }
+
+        $dosen->update(['status_akun' => 'aktif']);
+
+        return response()->json(['message' => 'Akun dosen berhasil disetujui.', 'data' => $dosen]);
+    }
+
+    public function reject(User $dosen, Request $request)
+    {
+        $this->authorize('create', User::class);
+
+        if ($dosen->role !== 'dosen') {
+            return response()->json(['message' => 'User adalah bukan dosen.'], 400);
+        }
+
+        $dosen->update(['status_akun' => 'ditolak']);
+
+        return response()->json(['message' => 'Akun dosen berhasil ditolak.', 'data' => $dosen]);
+    }
 }

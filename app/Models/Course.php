@@ -35,6 +35,12 @@ class Course extends Model
         return $this->hasMany(Assignment::class);
     }
 
+    // Memiliki banyak Pesan
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
