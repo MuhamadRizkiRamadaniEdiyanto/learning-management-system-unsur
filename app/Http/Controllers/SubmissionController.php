@@ -28,9 +28,13 @@ class SubmissionController extends Controller
     {
         abort_unless(request()->user()?->role === 'mahasiswa', 403, 'Akses hanya untuk mahasiswa.');
 
-        return response()->json([
-            'data' => $this->service->getByMahasiswa((int) request()->user()->id),
-        ]);
+        $submissions = $this->service->getByMahasiswa((int) request()->user()->id);
+
+        if (request()->wantsJson()) {
+            return response()->json(['data' => $submissions]);
+        }
+
+        return view('mahasiswa.submissions.index');
     }
 
     /**

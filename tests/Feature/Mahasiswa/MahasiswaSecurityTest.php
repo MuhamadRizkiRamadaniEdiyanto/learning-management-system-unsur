@@ -113,7 +113,7 @@ class MahasiswaSecurityTest extends TestCase
         $mahasiswa->enrolledCourses()->attach($course->id);
 
         $this->actingAs($mahasiswa)
-            ->get('/mahasiswa/dashboard')
+            ->getJson('/mahasiswa/dashboard')
             ->assertOk()
             ->assertJsonPath('data.courses.0.id', $course->id)
             ->assertJsonStructure([
@@ -160,7 +160,7 @@ class MahasiswaSecurityTest extends TestCase
         ]);
 
         $this->actingAs($mahasiswa)
-            ->get('/mahasiswa/submissions')
+            ->getJson('/mahasiswa/submissions')
             ->assertOk()
             ->assertJsonPath('data.0.user_id', $mahasiswa->id)
             ->assertJsonPath('data.0.assignment_id', $assignment->id);

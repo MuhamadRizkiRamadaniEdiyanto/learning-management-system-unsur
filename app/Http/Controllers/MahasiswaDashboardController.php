@@ -48,12 +48,16 @@ class MahasiswaDashboardController extends Controller
             ->take(5)
             ->values();
 
-        return response()->json([
-            'data' => [
-                'courses' => $courses,
-                'assignments' => $assignments,
-                'nilai_terakhir' => $nilaiTerakhir,
-            ],
-        ]);
+        $data = [
+            'courses' => $courses,
+            'assignments' => $assignments,
+            'nilai_terakhir' => $nilaiTerakhir,
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json(['data' => $data]);
+        }
+
+        return view('mahasiswa.dashboard', $data);
     }
 }
