@@ -27,12 +27,18 @@ class Submission extends Model
     }
 
     /**
-     * Relasi ke tabel Users (Mahasiswa)
-     * Pengumpulan ini dilakukan oleh satu Mahasiswa
-     * Kita menggunakan 'user_id' untuk merujuk ke tabel users
+     * Relasi ke user yang mengumpulkan tugas.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Alias relasi untuk konteks mahasiswa.
      */
     public function mahasiswa()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->user();
     }
 }

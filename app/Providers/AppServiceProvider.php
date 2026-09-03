@@ -2,13 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\Assignment;
+use App\Models\Course;
+use App\Models\Material;
 use App\Models\Message;
+use App\Models\Submission;
 use App\Models\User;
+use App\Policies\AssignmentPolicy;
+use App\Policies\CoursePolicy;
+use App\Policies\MaterialPolicy;
 use App\Policies\DosenPolicy;
 use App\Policies\MahasiswaPolicy;
 use App\Policies\MessagePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\SchedulePolicy;
+use App\Policies\SubmissionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\AssignmentRepository;
 use App\Repositories\Contracts\AssignmentRepositoryInterface;
@@ -48,6 +56,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Course::class, CoursePolicy::class);
+        Gate::policy(Assignment::class, AssignmentPolicy::class);
+        Gate::policy(Material::class, MaterialPolicy::class);
+        Gate::policy(Submission::class, SubmissionPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Message::class, MessagePolicy::class);
 

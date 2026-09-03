@@ -27,6 +27,11 @@ class MaterialController extends Controller
     public function create(Course $course)
     {
         $this->authorize('create', [Material::class, $course]);
+
+        if (! request()->wantsJson()) {
+            return view('dosen.materials.create', compact('course'));
+        }
+
         return response()->json(['data' => ['course' => $course]]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Schedule;
+use App\Models\Course;
 use App\Repositories\Contracts\ScheduleRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -24,6 +25,19 @@ class ScheduleService
     public function findById(int $id): Schedule
     {
         return $this->schedules->findById($id);
+    }
+
+    public function getTodayByCourses(Collection $courses): Collection
+    {
+        $today = now()->format('Y-m-d');
+
+        return $courses
+            ->flatMap(fn(Course $course) => $course->schedules()
+                ->whereDate('hari', $today)
+                ->orderBy('jam_mulai')
+                ->get()
+                ->each(fn(Schedule $schedule) => $schedule->setAttribute('course_name', $course->nama)))
+            ->values();
     }
 
     public function create(array $data): Schedule

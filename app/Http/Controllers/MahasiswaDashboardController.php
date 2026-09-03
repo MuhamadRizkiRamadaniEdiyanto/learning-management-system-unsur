@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\AssignmentService;
 use App\Services\CourseService;
+use App\Services\MaterialService;
+use App\Services\ScheduleService;
 use App\Services\SubmissionService;
 use Illuminate\Http\Request;
 
@@ -13,6 +15,8 @@ class MahasiswaDashboardController extends Controller
         private CourseService $courseService,
         private AssignmentService $assignmentService,
         private SubmissionService $submissionService,
+        private MaterialService $materialService,
+        private ScheduleService $scheduleService,
     ) {}
 
     public function index(Request $request)
@@ -48,10 +52,15 @@ class MahasiswaDashboardController extends Controller
             ->take(5)
             ->values();
 
+        $todaySchedules = $this->scheduleService->getTodayByCourses($courses);
+        $latestMaterials = $this->materialService->getLatestByCourses($courses);
+
         $data = [
             'courses' => $courses,
             'assignments' => $assignments,
             'nilai_terakhir' => $nilaiTerakhir,
+            'today_schedules' => $todaySchedules,
+            'latest_materials' => $latestMaterials,
         ];
 
         if ($request->wantsJson()) {

@@ -106,6 +106,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('assignments.submissions', SubmissionController::class)
         ->only(['index', 'show'])
         ->scoped();
+
+    Route::get('assignments/{assignment}/submissions/{submission}/download', [SubmissionController::class, 'download'])
+        ->scopeBindings()
+        ->name('assignments.submissions.download');
 });
 
 Route::middleware(['auth', 'role:dosen'])->group(function () {

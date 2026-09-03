@@ -33,10 +33,10 @@ class SubmissionService
     {
         $this->ensureBeforeDeadline($assignment);
         $existing = $this->submissions->findByAssignmentAndMahasiswa($assignment, $userId);
-        $path = $file->store('submissions', 'local');
+        $path = $file->store('assignments', 'public');
 
         if ($existing) {
-            Storage::disk('local')->delete($existing->file_jawaban);
+            Storage::disk('public')->delete($existing->file_jawaban);
             return $this->submissions->update($existing, ['file_jawaban' => $path, 'nilai' => null]);
         }
 
@@ -50,8 +50,8 @@ class SubmissionService
     public function update(Submission $submission, UploadedFile $file): Submission
     {
         $this->ensureBeforeDeadline($submission->assignment);
-        $path = $file->store('submissions', 'local');
-        Storage::disk('local')->delete($submission->file_jawaban);
+        $path = $file->store('assignments', 'public');
+        Storage::disk('public')->delete($submission->file_jawaban);
 
         return $this->submissions->update($submission, ['file_jawaban' => $path, 'nilai' => null]);
     }
@@ -59,8 +59,16 @@ class SubmissionService
     public function delete(Submission $submission): bool
     {
         $this->ensureBeforeDeadline($submission->assignment);
-        Storage::disk('local')->delete($submission->file_jawaban);
+        Storage::disk('public')->delete($submission->file_jawaban);
         return $this->submissions->delete($submission);
+    }
+
+    public function download(Submission $submission)
+    {
+        $disk = Storage::disk('public');
+        abort_unless($submission->file_jawaban && $disk->exists($submission->file_jawaban), 404, 'File pengumpulan tidak ditemukan.');
+
+        return response()->download($disk->path($submission->file_jawaban), basename($submission->file_jawaban));
     }
 
     public function grade(Submission $submission, int|float $nilai): Submission

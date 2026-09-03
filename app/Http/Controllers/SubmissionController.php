@@ -66,6 +66,14 @@ class SubmissionController extends Controller
         return response()->json(['data' => $this->service->findById($submission->id)]);
     }
 
+    public function download(Assignment $assignment, Submission $submission)
+    {
+        abort_unless((int) $submission->assignment_id === (int) $assignment->id, 404);
+        $this->authorize('view', $submission);
+
+        return $this->service->download($submission);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

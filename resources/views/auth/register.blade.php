@@ -37,9 +37,13 @@
 
         <!-- Nomor Induk (NIM/NIDN) -->
         <div class="mt-4">
-            <x-input-label for="nomor_induk" :value="role === 'mahasiswa' ? __('NIM (Nomor Induk Mahasiswa)') : __('NIDN (Nomor Induk Dosen Nasional)')" />
+            <label for="nomor_induk" class="block font-medium text-sm text-gray-700">
+                <span
+                    x-text="role === 'mahasiswa' ? 'NIM (Nomor Induk Mahasiswa)' : 'NIDN (Nomor Induk Dosen Nasional)'"></span>
+            </label>
             <x-text-input id="nomor_induk" class="block mt-1 w-full" type="text" name="nomor_induk" :value="old('nomor_induk')"
-                :placeholder="role === 'mahasiswa' ? 'Contoh: 2024001' : 'Contoh: 0012345678'" required autocomplete="off" />
+                x-bind:placeholder="role === 'mahasiswa' ? 'Contoh: 2024001' : 'Contoh: 0012345678'" required
+                autocomplete="off" />
             <p class="text-xs text-gray-500 mt-1">
                 <span x-show="role === 'mahasiswa'">{{ __('Masukkan nomor induk mahasiswa Anda') }}</span>
                 <span x-show="role === 'dosen'">{{ __('Masukkan NIDN Anda (10 digit)') }}</span>

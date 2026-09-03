@@ -5,11 +5,16 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="bg-slate-50 py-8 sm:py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-8 rounded-2xl bg-slate-900 p-6 text-white shadow-sm sm:p-8">
+                <p class="text-sm font-medium text-cyan-300">Fakultas Teknik Universitas Suryakancana</p>
+                <h1 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Dashboard Pengajaran</h1>
+                <p class="mt-2 text-sm text-slate-300">Pantau aktivitas kelas, tugas, dan submission mahasiswa.</p>
+            </div>
             <!-- Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Mata Kuliah Diampu</p>
@@ -24,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Total Tugas</p>
@@ -41,7 +46,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Submission Belum Dinilai</p>
@@ -57,7 +62,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Jadwal Minggu Depan</p>
@@ -100,27 +105,43 @@
                 </a>
             </div>
 
-            <!-- Courses and Ungraded Submissions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Courses List -->
-                <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Mata Kuliah Saya</h3>
+            <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
+                <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm xl:col-span-3">
+                    <div class="border-b border-slate-200 px-5 py-4">
+                        <h2 class="font-semibold text-slate-900">Submission Menunggu Penilaian</h2>
+                        <p class="mt-1 text-xs text-slate-500">Tugas yang perlu segera diperiksa</p>
                     </div>
-                    <div id="courses-list" class="divide-y">
-                        <p class="p-6 text-gray-500">Memuat data...</p>
+                    <div id="ungraded-list" class="overflow-x-auto">
+                        <p class="p-6 text-sm text-slate-500">Memuat data...</p>
                     </div>
-                </div>
+                </section>
 
-                <!-- Ungraded Submissions -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Submission Menunggu</h3>
+                <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm xl:col-span-2">
+                    <div class="border-b border-slate-200 px-5 py-4">
+                        <h2 class="font-semibold text-slate-900">Jadwal Mengajar</h2>
+                        <p class="mt-1 text-xs text-slate-500">Agenda terdekat tujuh hari</p>
                     </div>
-                    <div id="ungraded-list" class="divide-y max-h-96 overflow-y-auto">
-                        <p class="p-6 text-gray-500">Memuat data...</p>
-                    </div>
-                </div>
+                    @if ($upcoming_schedules->isEmpty())
+                        <p class="p-6 text-sm text-slate-500">Belum ada jadwal mengajar terdekat.</p>
+                    @else
+                        <div class="divide-y divide-slate-100">
+                            @foreach ($upcoming_schedules as $schedule)
+                                <div class="flex gap-4 px-5 py-4">
+                                    <div
+                                        class="min-w-20 rounded-lg bg-cyan-50 px-2 py-2 text-center text-xs font-semibold text-cyan-700">
+                                        {{ \Carbon\Carbon::parse($schedule['hari'])->format('d M') }}</div>
+                                    <div>
+                                        <p class="font-medium text-slate-900">{{ $schedule['course_name'] }}</p>
+                                        <p class="mt-1 text-xs text-slate-500">
+                                            {{ substr($schedule['jam_mulai'], 0, 5) }} -
+                                            {{ substr($schedule['jam_selesai'], 0, 5) }} · {{ $schedule['ruangan'] }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </section>
             </div>
         </div>
     </div>
@@ -142,33 +163,23 @@
                         document.getElementById('upcoming-schedules').textContent = data.data.upcoming_schedules
                             ?.length || 0;
 
-                        // Render courses
-                        const coursesList = document.getElementById('courses-list');
-                        if (data.data.courses && data.data.courses.length > 0) {
-                            coursesList.innerHTML = data.data.courses.map(course => `
-                            <div class="p-4 hover:bg-gray-50">
-                                <a href="/courses/${course.id}/materials" class="block">
-                                    <p class="font-semibold text-gray-900">${course.nama}</p>
-                                    <p class="text-sm text-gray-500">${course.kode_matkul} (${course.sks} SKS)</p>
-                                </a>
-                            </div>
-                        `).join('');
-                        } else {
-                            coursesList.innerHTML = '<p class="p-6 text-gray-500">Belum ada mata kuliah</p>';
-                        }
-
                         // Render ungraded submissions
                         const ungradedList = document.getElementById('ungraded-list');
                         if (data.data.ungraded_submissions && data.data.ungraded_submissions.length > 0) {
-                            ungradedList.innerHTML = data.data.ungraded_submissions.map(sub => `
-                            <div class="p-4 hover:bg-gray-50 border-b last:border-b-0">
-                                <p class="text-sm font-semibold text-gray-900">${sub.assignment_title}</p>
-                                <p class="text-xs text-gray-500">${sub.mahasiswa_name}</p>
-                                <p class="text-xs text-gray-400 mt-1">${sub.course_name}</p>
-                            </div>
-                        `).join('');
+                            ungradedList.innerHTML = `
+                                <table class="min-w-full divide-y divide-slate-200 text-sm">
+                                    <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+                                        <tr><th class="px-5 py-3 font-semibold">Mahasiswa</th><th class="px-5 py-3 font-semibold">Tugas</th><th class="px-5 py-3 font-semibold">Status</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 bg-white">
+                                        ${data.data.ungraded_submissions.map(sub => `
+                                                <tr class="hover:bg-slate-50"><td class="whitespace-nowrap px-5 py-4 font-medium text-slate-900">${sub.mahasiswa_name}</td><td class="px-5 py-4"><p class="font-medium text-slate-800">${sub.assignment_title}</p><p class="mt-1 text-xs text-slate-500">${sub.course_name}</p></td><td class="px-5 py-4"><span class="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">Belum dinilai</span></td></tr>
+                                            `).join('')}
+                                    </tbody>
+                                </table>`;
                         } else {
-                            ungradedList.innerHTML = '<p class="p-6 text-gray-500">Semua submission sudah dinilai</p>';
+                            ungradedList.innerHTML =
+                                '<p class="p-6 text-sm text-slate-500">Semua submission sudah dinilai.</p>';
                         }
                     }
                 })

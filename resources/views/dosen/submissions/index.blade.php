@@ -236,11 +236,21 @@
                 })
                 .then(r => r.json())
                 .then(data => {
-                    alert(data.message || 'Nilai berhasil disimpan');
+                    window.dispatchEvent(new CustomEvent('notify', {
+                        detail: {
+                            message: data.message || 'Nilai berhasil disimpan',
+                            type: 'success'
+                        }
+                    }));
                     closeGradeModal();
                     loadSubmissions();
                 })
-                .catch(e => alert('Error: ' + e));
+                .catch(e => window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        message: 'Nilai gagal disimpan.',
+                        type: 'error'
+                    }
+                })));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
