@@ -758,3 +758,50 @@ php artisan test
 **Last Updated**: 2026-08-29  
 **Tested By**: [Your Name]  
 **Status**: Ready for Manual Testing
+
+---
+
+## FINAL CHECKLIST BACKEND - SEBELUM SEMINAR
+
+### Environment dan Database
+
+- [ ] `.env` memakai database demo yang benar.
+- [ ] `php artisan migrate:fresh --seed` berhasil atau backup database demo sudah diverifikasi.
+- [ ] Akun admin, dosen, dan mahasiswa dapat login.
+- [ ] `php artisan route:list` menunjukkan route inti yang diperlukan.
+- [ ] Storage upload dapat ditulis dan file lama terhapus saat update/delete.
+
+### Authentication dan Authorization
+
+- [ ] User tanpa login tidak dapat mengakses endpoint internal.
+- [ ] Mahasiswa yang membuka `/admin/dashboard` menerima HTTP 403 langsung.
+- [ ] Mahasiswa yang membuka `/dosen/dashboard` menerima HTTP 403.
+- [ ] Dosen hanya dapat mengelola course yang diampu.
+- [ ] Mahasiswa hanya dapat melihat course yang diikuti.
+- [ ] Submission dan nilai hanya dapat diakses pemilik atau dosen pengampu.
+
+### Materi, Tugas, dan Submission
+
+- [ ] Upload PDF/PNG valid berhasil.
+- [ ] File di atas 10 MB dan format tidak diizinkan ditolak.
+- [ ] Kombinasi file dan link YouTube yang salah ditolak.
+- [ ] Tenggat tugas wajib berada di masa depan.
+- [ ] Mahasiswa tidak dapat membuat atau mengganti submission setelah deadline.
+- [ ] File submission dapat diunduh oleh pihak yang berwenang.
+
+### Dashboard, Laporan, dan Rilis
+
+- [ ] Dashboard mahasiswa hanya menampilkan data course yang diikuti.
+- [ ] Jadwal, tugas, materi, dan pesan terbaru tampil benar.
+- [ ] Dashboard memakai eager loading dan tidak menghasilkan N+1 query.
+- [ ] Total materi dan rasio pengumpulan pada laporan sesuai database.
+- [ ] Endpoint laporan hanya dapat diakses admin dan export berhasil.
+- [ ] `php artisan test` dan `php artisan view:cache` berhasil.
+- [ ] `storage/logs/laravel.log` diperiksa dan tidak berisi exception baru.
+- [ ] Backup database demo, kredensial, URL, dan prosedur rollback tersedia.
+
+### Hasil Akhir
+
+- [ ] Test keamanan dan otorisasi terfokus lulus.
+- [ ] Smoke test login -> course -> tugas -> upload -> penilaian -> laporan lulus.
+- [ ] Kegagalan test yang tersisa sudah dicatat dan dinilai bukan blocker.

@@ -11,6 +11,15 @@ class MahasiswaSecurityTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_mahasiswa_accessing_admin_dashboard_receives_403(): void
+    {
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+
+        $this->actingAs($mahasiswa)
+            ->get('/admin/dashboard')
+            ->assertStatus(403);
+    }
+
     public function test_mahasiswa_sees_only_enrolled_courses(): void
     {
         $dosen = User::factory()->create([

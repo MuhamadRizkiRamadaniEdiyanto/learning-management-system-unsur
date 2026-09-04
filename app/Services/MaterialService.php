@@ -26,7 +26,9 @@ class MaterialService
     public function getLatestByCourses(Collection $courses, int $limit = 5): Collection
     {
         return $courses
-            ->flatMap(fn(Course $course) => $this->getByCourse($course)->map(function (Material $material) use ($course) {
+            ->flatMap(fn(Course $course) => ($course->relationLoaded('materials')
+                ? $course->materials
+                : $this->getByCourse($course))->map(function (Material $material) use ($course) {
                 $material->setAttribute('course_name', $course->nama);
 
                 return $material;

@@ -32,10 +32,9 @@ class ScheduleService
         $today = now()->format('Y-m-d');
 
         return $courses
-            ->flatMap(fn(Course $course) => $course->schedules()
-                ->whereDate('hari', $today)
-                ->orderBy('jam_mulai')
-                ->get()
+            ->flatMap(fn(Course $course) => ($course->relationLoaded('schedules')
+                ? $course->schedules->filter(fn(Schedule $schedule) => $schedule->hari === $today)->sortBy('jam_mulai')
+                : $course->schedules()->whereDate('hari', $today)->orderBy('jam_mulai')->get())
                 ->each(fn(Schedule $schedule) => $schedule->setAttribute('course_name', $course->nama)))
             ->values();
     }

@@ -39,6 +39,13 @@ class ReportController extends Controller
         return response()->json(['data' => $this->service->bebanMengajarDosen()]);
     }
 
+    public function activitySummary()
+    {
+        $this->authorize('manage', \App\Models\User::class);
+
+        return response()->json(['data' => $this->service->activitySummary()]);
+    }
+
     public function export(Request $request, string $jenis)
     {
         $this->authorize('manage', \App\Models\User::class);

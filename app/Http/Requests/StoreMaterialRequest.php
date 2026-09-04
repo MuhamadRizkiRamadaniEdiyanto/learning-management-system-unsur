@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Course;
 use App\Rules\MaxUploadSize;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -10,7 +11,11 @@ class StoreMaterialRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $course = $this->route('course');
+
+        return $this->user()?->role === 'dosen'
+            && $course instanceof Course
+            && (int) $course->dosen_id === (int) $this->user()->id;
     }
 
     public function rules(): array

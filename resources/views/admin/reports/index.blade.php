@@ -7,6 +7,38 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <section class="mb-8 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="border-b border-slate-200 px-6 py-5">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-700">Ikhtisar sistem</p>
+                    <h3 class="mt-1 text-lg font-semibold text-slate-900">Aktivitas pembelajaran</h3>
+                    <p class="mt-1 text-sm text-slate-500">Pantau materi yang tersedia dan tingkat partisipasi
+                        pengumpulan tugas.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th
+                                    class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Indikator</th>
+                                <th
+                                    class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Nilai</th>
+                                <th
+                                    class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activity-summary-body" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="3" class="px-6 py-6 text-sm text-slate-500">Memuat ringkasan
+                                    aktivitas...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Report Options Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- Mahasiswa per Matkul -->
@@ -77,7 +109,7 @@
     </div>
 
     <!-- Course Selector Modal -->
-    <div id="course-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div id="course-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full mx-4">
             <h3 class="text-lg font-semibold mb-4">Pilih Mata Kuliah</h3>
 
@@ -95,8 +127,7 @@
     </div>
 
     <!-- Assignment Selector Modal -->
-    <div id="assignment-modal"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div id="assignment-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full mx-4">
             <h3 class="text-lg font-semibold mb-4">Pilih Tugas/Kuis</h3>
 
@@ -141,6 +172,36 @@
                 });
         }
 
+        function loadActivitySummary() {
+            fetch("{{ route('admin.reports.activity-summary') }}", {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(payload => {
+                    const summary = payload.data || {};
+                    const rows = [
+                        ['Total materi diunggah', summary.total_materi ?? 0, 'Materi pembelajaran tersimpan'],
+                        ['Total tugas', summary.total_tugas ?? 0, 'Tugas yang tersedia di semua mata kuliah'],
+                        ['Total pengumpulan', summary.total_submission ?? 0, 'Dokumen jawaban yang telah dikirim'],
+                        ['Rasio pengumpulan', `${summary.rasio_pengumpulan ?? 0}%`,
+                            `${summary.total_submission ?? 0} dari ${summary.total_peluang_submission ?? 0} peluang pengumpulan`
+                        ],
+                    ];
+                    document.getElementById('activity-summary-body').innerHTML = rows.map(row => `
+                        <tr class="hover:bg-slate-50">
+                            <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-slate-900">${row[0]}</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-sm font-bold text-cyan-700">${row[1]}</td>
+                            <td class="px-6 py-4 text-sm text-slate-500">${row[2]}</td>
+                        </tr>`).join('');
+                })
+                .catch(() => {
+                    document.getElementById('activity-summary-body').innerHTML =
+                        '<tr><td colspan="3" class="px-6 py-6 text-sm text-rose-600">Ringkasan aktivitas gagal dimuat.</td></tr>';
+                });
+        }
+
         function loadAssignments() {
             // Fetch all assignments from all courses
             Promise.all(allCourses.map(course =>
@@ -170,6 +231,7 @@
 
         function openCourseSelector(type) {
             document.getElementById('course-modal').classList.remove('hidden');
+            document.getElementById('course-modal').classList.add('flex');
             window.courseReportType = type;
             loadCourses();
         }
@@ -178,16 +240,19 @@
             loadCourses();
             setTimeout(() => {
                 document.getElementById('assignment-modal').classList.remove('hidden');
+                document.getElementById('assignment-modal').classList.add('flex');
                 loadAssignments();
             }, 100);
         }
 
         function closeCourseModal() {
             document.getElementById('course-modal').classList.add('hidden');
+            document.getElementById('course-modal').classList.remove('flex');
         }
 
         function closeAssignmentModal() {
             document.getElementById('assignment-modal').classList.add('hidden');
+            document.getElementById('assignment-modal').classList.remove('flex');
         }
 
         function loadReport(reportType) {
@@ -393,6 +458,9 @@
             window.print();
         }
 
-        document.addEventListener('DOMContentLoaded', loadCourses);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCourses();
+            loadActivitySummary();
+        });
     </script>
 </x-app-layout>

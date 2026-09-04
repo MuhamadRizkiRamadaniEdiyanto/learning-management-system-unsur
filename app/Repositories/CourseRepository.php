@@ -57,6 +57,13 @@ class CourseRepository implements CourseRepositoryInterface
     public function getByMahasiswa(int $mahasiswaId): Collection
     {
         return Course::with('dosen')
+            ->with([
+                'assignments' => fn($query) => $query->latest('tenggat_waktu'),
+                'assignments.submissions' => fn($query) => $query->where('user_id', $mahasiswaId),
+                'materials' => fn($query) => $query->latest(),
+                'schedules',
+                'messages.sender',
+            ])
             ->whereHas('mahasiswa', fn($query) => $query->whereKey($mahasiswaId))
             ->latest()
             ->get();

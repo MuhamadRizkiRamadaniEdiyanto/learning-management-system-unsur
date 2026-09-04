@@ -125,6 +125,36 @@
                     </div>
                 @endif
             </section>
+
+            <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                    <div>
+                        <h2 class="font-semibold text-slate-900">Pengumuman dan pesan terbaru</h2>
+                        <p class="mt-1 text-xs text-slate-500">Kabar terbaru dari ruang kelas Anda</p>
+                    </div>
+                    <a href="{{ route('mahasiswa.messages.index') }}"
+                        class="text-sm font-semibold text-cyan-700 hover:text-cyan-900">Buka pesan</a>
+                </div>
+                @if ($latest_messages->isEmpty())
+                    <p class="px-5 py-8 text-sm text-slate-500">Belum ada pesan terbaru.</p>
+                @else
+                    <div
+                        class="grid grid-cols-1 divide-y divide-slate-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3">
+                        @foreach ($latest_messages as $message)
+                            <article class="p-5">
+                                <div class="flex items-center justify-between gap-3">
+                                    <p class="truncate text-xs font-semibold uppercase tracking-wide text-cyan-700">
+                                        {{ $message->course_name }}</p>
+                                    <time
+                                        class="shrink-0 text-xs text-slate-400">{{ $message->created_at->format('d M, H:i') }}</time>
+                                </div>
+                                <p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-700">{{ $message->isi }}</p>
+                                <p class="mt-3 text-xs text-slate-400">{{ $message->sender?->name ?? 'Pengirim' }}</p>
+                            </article>
+                        @endforeach
+                    </div>
+                @endif
+            </section>
         </div>
     </div>
 </x-app-layout>

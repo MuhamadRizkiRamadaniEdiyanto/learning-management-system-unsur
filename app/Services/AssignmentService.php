@@ -23,10 +23,14 @@ class AssignmentService
 
     public function getByCourseForMahasiswa(Course $course, int $mahasiswaId): Collection
     {
-        $assignments = $this->assignments->getByCourse($course->id);
+        $assignments = $course->relationLoaded('assignments')
+            ? $course->assignments
+            : $this->assignments->getByCourse($course->id);
 
         return $assignments->map(function (Assignment $assignment) use ($mahasiswaId) {
-            $submission = $assignment->submissions()->where('user_id', $mahasiswaId)->first();
+            $submission = $assignment->relationLoaded('submissions')
+                ? $assignment->submissions->firstWhere('user_id', $mahasiswaId)
+                : $assignment->submissions()->where('user_id', $mahasiswaId)->first();
 
             if ($submission) {
                 $status = $submission->nilai !== null ? 'sudah_dinilai' : 'sudah_dikumpulkan';

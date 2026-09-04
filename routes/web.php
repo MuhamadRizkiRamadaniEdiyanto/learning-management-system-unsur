@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('mahasiswa/{mahasiswa}/courses', [\App\Http\Controllers\MahasiswaController::class, 'courses'])->name('mahasiswa.courses');
     Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
     Route::get('reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/activity-summary', [\App\Http\Controllers\ReportController::class, 'activitySummary'])->name('reports.activity-summary');
     Route::get('reports/{jenis}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
     Route::get('reports/mahasiswa-per-matkul', [\App\Http\Controllers\ReportController::class, 'jumlahMahasiswaPerMatkul'])->name('reports.mahasiswa-per-matkul');
     Route::get('reports/nilai-per-matkul/{course}', [\App\Http\Controllers\ReportController::class, 'rekapNilaiPerMatkul'])->name('reports.nilai-per-matkul');

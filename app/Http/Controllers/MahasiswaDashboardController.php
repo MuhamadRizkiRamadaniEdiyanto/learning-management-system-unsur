@@ -24,25 +24,20 @@ class MahasiswaDashboardController extends Controller
         $mahasiswaId = (int) $request->user()->id;
 
         $courses = $this->courseService->getByMahasiswa($mahasiswaId);
-        $assignments = [];
-
-        foreach ($courses as $course) {
-            $courseAssignments = $this->assignmentService->getByCourseForMahasiswa($course, $mahasiswaId);
-
-            foreach ($courseAssignments as $assignment) {
-                $assignments[] = [
-                    'id' => $assignment->id,
-                    'course_id' => $course->id,
-                    'course_name' => $course->nama,
-                    'judul' => $assignment->judul,
-                    'tenggat_waktu' => $assignment->tenggat_waktu,
-                    'status' => $assignment->submission_status,
-                    'nilai' => $assignment->submission_nilai,
-                ];
-            }
-        }
-
-        $assignments = collect($assignments)
+        $assignments = $courses->flatMap(function ($course) use ($mahasiswaId) {
+            return $this->assignmentService->getByCourseForMahasiswa($course, $mahasiswaId)
+                ->map(function ($assignment) use ($course) {
+                    return [
+                        'id' => $assignment->id,
+                        'course_id' => $course->id,
+                        'course_name' => $course->nama,
+                        'judul' => $assignment->judul,
+                        'tenggat_waktu' => $assignment->tenggat_waktu,
+                        'status' => $assignment->submission_status,
+                        'nilai' => $assignment->submission_nilai,
+                    ];
+                });
+        })
             ->sortBy('tenggat_waktu')
             ->take(7)
             ->values();
@@ -54,6 +49,15 @@ class MahasiswaDashboardController extends Controller
 
         $todaySchedules = $this->scheduleService->getTodayByCourses($courses);
         $latestMaterials = $this->materialService->getLatestByCourses($courses);
+        $latestMessages = $courses
+            ->flatMap(fn($course) => $course->messages->map(function ($message) use ($course) {
+                $message->setAttribute('course_name', $course->nama);
+
+                return $message;
+            }))
+            ->sortByDesc('created_at')
+            ->take(5)
+            ->values();
 
         $data = [
             'courses' => $courses,
@@ -61,6 +65,7 @@ class MahasiswaDashboardController extends Controller
             'nilai_terakhir' => $nilaiTerakhir,
             'today_schedules' => $todaySchedules,
             'latest_materials' => $latestMaterials,
+            'latest_messages' => $latestMessages,
         ];
 
         if ($request->wantsJson()) {

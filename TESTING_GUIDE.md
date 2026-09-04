@@ -885,4 +885,25 @@ ls -la storage/app/private/
 **Difficulty Level**: Beginner to Intermediate  
 **Tools Required**: Browser, Terminal, curl (optional)
 
+---
+
+## FINAL BACKEND RELEASE CHECKLIST
+
+Gunakan checklist ini setelah pengujian manual selesai dan sebelum demo seminar.
+
+- [ ] Database demo berhasil dimigrasikan/di-restore dan akun tiga role tersedia.
+- [ ] Login mengarahkan admin, dosen, dan mahasiswa ke dashboard masing-masing.
+- [ ] Mahasiswa yang mengakses `/admin/dashboard` dan `/dosen/dashboard` menerima HTTP 403.
+- [ ] Dosen hanya dapat mengelola course, materi, tugas, dan submission miliknya.
+- [ ] Mahasiswa hanya dapat melihat course yang diikuti dan submission miliknya.
+- [ ] Upload PDF/PNG valid, file lebih dari 10 MB, format invalid, serta update/delete file sudah diuji.
+- [ ] Submission sebelum deadline berhasil dan create/update setelah deadline ditolak.
+- [ ] Dashboard mahasiswa menampilkan jadwal, tugas, materi, dan pesan yang sesuai.
+- [ ] Query dashboard diperiksa dan tidak menimbulkan N+1.
+- [ ] Laporan admin menampilkan total materi dan rasio pengumpulan yang cocok dengan database.
+- [ ] Export laporan berhasil dan endpoint laporan menolak role non-admin.
+- [ ] Jalankan `php artisan test tests/Feature/Mahasiswa/MahasiswaSecurityTest.php tests/Feature/Authorization/LmsRoleAuthorizationTest.php`.
+- [ ] Jalankan `php artisan test` dan `php artisan view:cache`.
+- [ ] Catat kegagalan test, exception log, backup database, URL demo, dan rollback plan.
+
 Good luck! 🎉

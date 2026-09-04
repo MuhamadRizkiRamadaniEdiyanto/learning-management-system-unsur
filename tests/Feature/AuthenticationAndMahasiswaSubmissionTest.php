@@ -67,6 +67,42 @@ class AuthenticationAndMahasiswaSubmissionTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_submission_create_and_update_are_rejected_after_deadline(): void
+    {
+        Storage::fake('public');
+        $dosen = User::factory()->create(['role' => 'dosen']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $course = Course::create([
+            'kode_matkul' => 'FEAT102',
+            'nama' => 'Deadline Testing',
+            'dosen_id' => $dosen->id,
+        ]);
+        $course->mahasiswa()->attach($mahasiswa);
+        $assignment = $course->assignments()->create([
+            'judul' => 'Tugas Ditutup',
+            'tenggat_waktu' => now()->subMinute(),
+        ]);
+
+        $this->actingAs($mahasiswa)
+            ->postJson("/assignments/{$assignment->id}/submissions", [
+                'file_jawaban' => UploadedFile::fake()->create('jawaban.pdf', 100, 'application/pdf'),
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['file_jawaban']);
+
+        $submission = $assignment->submissions()->create([
+            'user_id' => $mahasiswa->id,
+            'file_jawaban' => 'assignments/lama.pdf',
+        ]);
+
+        $this->actingAs($mahasiswa)
+            ->putJson("/assignments/{$assignment->id}/submissions/{$submission->id}", [
+                'file_jawaban' => UploadedFile::fake()->create('jawaban-baru.pdf', 100, 'application/pdf'),
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['file_jawaban']);
+    }
+
     public function test_student_cannot_access_admin_or_dosen_dashboard(): void
     {
         $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);

@@ -96,4 +96,23 @@ class ReportService
             ])->values(),
         ];
     }
+
+    public function activitySummary(): array
+    {
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $totalAssignments = Assignment::count();
+        $totalTerdaftar = Course::withCount('mahasiswa')->get()->sum('mahasiswa_count');
+        $totalSubmission = Submission::count();
+
+        return [
+            'total_materi' => \App\Models\Material::count(),
+            'total_tugas' => $totalAssignments,
+            'total_submission' => $totalSubmission,
+            'total_peluang_submission' => $totalTerdaftar,
+            'rasio_pengumpulan' => $totalTerdaftar > 0
+                ? round(($totalSubmission / $totalTerdaftar) * 100, 1)
+                : 0,
+            'total_mahasiswa' => $totalMahasiswa,
+        ];
+    }
 }
