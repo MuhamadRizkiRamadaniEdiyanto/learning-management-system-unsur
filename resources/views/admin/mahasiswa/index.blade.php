@@ -105,7 +105,7 @@
             const tbody = document.getElementById('mahasiswa-tbody');
             if (mahasiswaList.length === 0) {
                 tbody.innerHTML =
-                '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td></tr>';
+                    '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td></tr>';
                 return;
             }
 
@@ -133,11 +133,11 @@
                         </td>
                         <td class="px-6 py-4 space-x-2">
                             ${mahasiswa.status_akun === 'pending' ? `
-                                    <button onclick="approveMahasiswa(${mahasiswa.id})" class="text-green-500 hover:text-green-700 text-sm">Setujui</button>
-                                    <button onclick="rejectMahasiswa(${mahasiswa.id})" class="text-red-500 hover:text-red-700 text-sm">Tolak</button>
-                                ` : ''}
+                                        <button onclick="approveMahasiswa(${mahasiswa.id})" class="text-green-500 hover:text-green-700 text-sm">Setujui</button>
+                                        <button onclick="rejectMahasiswa(${mahasiswa.id})" class="text-red-500 hover:text-red-700 text-sm">Tolak</button>
+                                    ` : ''}
                             <button onclick="editMahasiswa(${mahasiswa.id})" class="text-blue-500 hover:text-blue-700 text-sm">Edit</button>
-                            <button onclick="viewCourses(${mahasiswa.id})" class="text-purple-500 hover:text-purple-700 text-sm">Lihat Kelas</button>
+                            <a href="{{ url('admin/mahasiswa') }}/${mahasiswa.id}/courses" class="text-purple-500 hover:text-purple-700 text-sm">Lihat Kelas</a>
                             <button onclick="deleteMahasiswa(${mahasiswa.id})" class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
                         </td>
                     </tr>
@@ -240,23 +240,6 @@
                 .then(data => {
                     alert(data.message);
                     loadMahasiswaData();
-                })
-                .catch(e => alert('Error: ' + e));
-        }
-
-        function viewCourses(id) {
-            fetch(`{{ url('admin/mahasiswa') }}/${id}/courses`, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    const courses = data.data || [];
-                    const courseList = courses.length > 0 ?
-                        courses.map(c => c.nama).join(', ') :
-                        'Belum terdaftar di mata kuliah apapun';
-                    alert('Mata Kuliah:\n' + courseList);
                 })
                 .catch(e => alert('Error: ' + e));
         }

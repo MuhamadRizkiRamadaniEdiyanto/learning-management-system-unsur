@@ -37,7 +37,7 @@ class SubmissionRepository implements SubmissionRepositoryInterface
 
     public function getByAssignment(int $assignmentId): Collection
     {
-        return Submission::with('mahasiswa')->where('assignment_id', $assignmentId)->latest()->get();
+        return Submission::with(['mahasiswa', 'assignment'])->where('assignment_id', $assignmentId)->latest()->get();
     }
 
     public function getByMahasiswa(int $userId): Collection

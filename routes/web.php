@@ -69,8 +69,8 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/mahasiswa/dashboard', [\App\Http\Controllers\MahasiswaDashboardController::class, 'index'])->name('mahasiswa.dashboard');
     Route::get('/mahasiswa/courses', fn() => view('mahasiswa.courses.index'))->name('mahasiswa.courses.index');
-    Route::get('/mahasiswa/materials', fn() => view('mahasiswa.materials.index'))->name('mahasiswa.materials.index');
-    Route::get('/mahasiswa/assignments', fn() => view('mahasiswa.assignments.index'))->name('mahasiswa.assignments.index');
+    Route::get('/mahasiswa/materials', [\App\Http\Controllers\MaterialController::class, 'mahasiswaIndex'])->name('mahasiswa.materials.index');
+    Route::get('/mahasiswa/assignments', [\App\Http\Controllers\AssignmentController::class, 'mahasiswaIndex'])->name('mahasiswa.assignments.index');
     Route::get('/mahasiswa/submissions', [\App\Http\Controllers\SubmissionController::class, 'mySubmissions'])->name('mahasiswa.submissions');
     Route::get('/mahasiswa/messages', fn() => view('mahasiswa.messages.index'))->name('mahasiswa.messages.index');
 });

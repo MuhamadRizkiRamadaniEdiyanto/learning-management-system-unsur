@@ -13,7 +13,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Mata Kuliah</label>
                         <select id="course-filter" class="w-full px-4 py-2 border border-gray-300 rounded"
-                            onchange="loadSubmissions()">
+                            onchange="loadAssignments(); loadSubmissions()">
                             <option value="">Semua Mata Kuliah</option>
                         </select>
                     </div>
@@ -97,14 +97,14 @@
         let allAssignments = [];
 
         function loadCourses() {
-            fetch("{{ route('admin.courses.index') }}", {
+            fetch("{{ route('courses.index') }}", {
                     headers: {
                         'Accept': 'application/json'
                     }
                 })
                 .then(r => r.json())
                 .then(data => {
-                    allCourses = data.data.data || [];
+                    allCourses = data.data.data || data.data || [];
 
                     const filter = document.getElementById('course-filter');
                     filter.innerHTML = '<option value="">Semua Mata Kuliah</option>';
@@ -192,7 +192,8 @@
                             </span>
                         </td>
                         <td class="px-6 py-4">${submission.nilai !== null ? submission.nilai : '-'}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 space-x-2">
+                            <a href="{{ url('assignments') }}/${submission.assignment_id}/submissions/${submission.id}" class="text-slate-600 hover:text-slate-900 text-sm">Detail</a>
                             <button onclick="openGradeModal(${submission.id})" class="text-blue-500 hover:text-blue-700 text-sm">
                                 ${submission.nilai !== null ? 'Edit' : 'Nilai'}
                             </button>

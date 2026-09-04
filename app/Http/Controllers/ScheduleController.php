@@ -25,6 +25,10 @@ class ScheduleController extends Controller
     {
         $this->authorize('create', Schedule::class);
 
+        if (! request()->wantsJson()) {
+            return view('admin.schedules.create', ['courses' => \App\Models\Course::orderBy('nama')->get()]);
+        }
+
         return response()->json(['data' => null]);
     }
 
@@ -40,6 +44,13 @@ class ScheduleController extends Controller
     public function edit(Schedule $schedule)
     {
         $this->authorize('update', $schedule);
+
+        if (! request()->wantsJson()) {
+            return view('admin.schedules.edit', [
+                'schedule' => $schedule,
+                'courses' => \App\Models\Course::orderBy('nama')->get(),
+            ]);
+        }
 
         return response()->json(['data' => $schedule]);
     }

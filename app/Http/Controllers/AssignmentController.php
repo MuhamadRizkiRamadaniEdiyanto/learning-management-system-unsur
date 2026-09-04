@@ -12,6 +12,21 @@ class AssignmentController extends Controller
 {
     public function __construct(private AssignmentService $service) {}
 
+    public function dosenIndex()
+    {
+        if (request()->wantsJson()) {
+            $assignments = Course::where('dosen_id', request()->user()->id)
+                ->with('assignments')
+                ->get()
+                ->flatMap(fn(Course $course) => $course->assignments)
+                ->values();
+
+            return response()->json(['data' => $assignments]);
+        }
+
+        return view('dosen.assignments.index');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -32,6 +47,11 @@ class AssignmentController extends Controller
     public function create(Course $course)
     {
         $this->authorize('create', [Assignment::class, $course]);
+
+        if (! request()->wantsJson()) {
+            return view('dosen.assignments.create', compact('course'));
+        }
+
         return response()->json(['data' => ['course' => $course]]);
     }
 
@@ -52,7 +72,27 @@ class AssignmentController extends Controller
     {
         abort_unless((int) $assignment->course_id === (int) $course->id, 404);
         $this->authorize('view', $assignment);
+
+        if (! request()->wantsJson() && request()->user()->role === 'mahasiswa') {
+            $assignment->load(['course', 'submissions' => fn($query) => $query->where('user_id', request()->user()->id)]);
+
+            return view('mahasiswa.assignments.show', compact('course', 'assignment'));
+        }
+
         return response()->json(['data' => $this->service->findById($assignment->id)]);
+    }
+
+    public function mahasiswaIndex()
+    {
+        $user = request()->user();
+        $assignments = $user->enrolledCourses()
+            ->with(['assignments.submissions' => fn($query) => $query->where('user_id', $user->id)])
+            ->get()
+            ->flatMap(fn($course) => $course->assignments->each(fn($assignment) => $assignment->setRelation('course', $course)))
+            ->sortBy('tenggat_waktu')
+            ->values();
+
+        return view('mahasiswa.assignments.index', compact('assignments'));
     }
 
     /**
@@ -62,6 +102,11 @@ class AssignmentController extends Controller
     {
         abort_unless((int) $assignment->course_id === (int) $course->id, 404);
         $this->authorize('update', $assignment);
+
+        if (! request()->wantsJson()) {
+            return view('dosen.assignments.edit', compact('course', 'assignment'));
+        }
+
         return response()->json(['data' => $assignment]);
     }
 

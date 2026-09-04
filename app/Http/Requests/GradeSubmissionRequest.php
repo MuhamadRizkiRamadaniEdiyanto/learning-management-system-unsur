@@ -13,6 +13,9 @@ class GradeSubmissionRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['nilai' => ['required', 'numeric', 'between:0,100']];
+        return [
+            'nilai' => ['required', 'numeric', 'between:0,100'],
+            'feedback' => ['nullable', 'string', 'max:5000'],
+        ];
     }
 }

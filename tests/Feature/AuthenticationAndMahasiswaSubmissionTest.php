@@ -103,6 +103,38 @@ class AuthenticationAndMahasiswaSubmissionTest extends TestCase
             ->assertJsonValidationErrors(['file_jawaban']);
     }
 
+    public function test_mahasiswa_cannot_submit_the_same_assignment_twice(): void
+    {
+        Storage::fake('public');
+        $dosen = User::factory()->create(['role' => 'dosen']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $course = Course::create([
+            'kode_matkul' => 'FEAT103',
+            'nama' => 'Duplicate Testing',
+            'dosen_id' => $dosen->id,
+        ]);
+        $course->mahasiswa()->attach($mahasiswa);
+        $assignment = $course->assignments()->create([
+            'judul' => 'Tugas Tunggal',
+            'tenggat_waktu' => now()->addDay(),
+        ]);
+
+        $this->actingAs($mahasiswa)
+            ->postJson("/assignments/{$assignment->id}/submissions", [
+                'file_jawaban' => UploadedFile::fake()->create('pertama.pdf', 100, 'application/pdf'),
+            ])
+            ->assertCreated();
+
+        $this->actingAs($mahasiswa)
+            ->postJson("/assignments/{$assignment->id}/submissions", [
+                'file_jawaban' => UploadedFile::fake()->create('kedua.pdf', 100, 'application/pdf'),
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['file_jawaban']);
+
+        $this->assertDatabaseCount('submissions', 1);
+    }
+
     public function test_student_cannot_access_admin_or_dosen_dashboard(): void
     {
         $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);

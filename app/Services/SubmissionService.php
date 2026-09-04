@@ -33,12 +33,10 @@ class SubmissionService
     {
         $this->ensureBeforeDeadline($assignment);
         $existing = $this->submissions->findByAssignmentAndMahasiswa($assignment, $userId);
-        $path = $file->store('assignments', 'public');
 
-        if ($existing) {
-            Storage::disk('public')->delete($existing->file_jawaban);
-            return $this->submissions->update($existing, ['file_jawaban' => $path, 'nilai' => null]);
-        }
+        abort_if($existing, 422, 'Anda sudah mengumpulkan tugas ini. Gunakan fitur perbarui submission.');
+
+        $path = $file->store('assignments', 'public');
 
         return $this->submissions->create([
             'assignment_id' => $assignment->id,
@@ -71,9 +69,9 @@ class SubmissionService
         return response()->download($disk->path($submission->file_jawaban), basename($submission->file_jawaban));
     }
 
-    public function grade(Submission $submission, int|float $nilai): Submission
+    public function grade(Submission $submission, int|float $nilai, ?string $feedback = null): Submission
     {
-        return $this->submissions->update($submission, ['nilai' => $nilai]);
+        return $this->submissions->update($submission, ['nilai' => $nilai, 'feedback' => $feedback]);
     }
 
     private function ensureBeforeDeadline(Assignment $assignment): void

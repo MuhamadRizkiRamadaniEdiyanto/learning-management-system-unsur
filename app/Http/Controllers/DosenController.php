@@ -25,6 +25,10 @@ class DosenController extends Controller
     {
         $this->authorize('create', User::class);
 
+        if (! request()->wantsJson()) {
+            return view('admin.dosen.create');
+        }
+
         return response()->json(['data' => null]);
     }
 
@@ -40,6 +44,10 @@ class DosenController extends Controller
     public function edit(User $dosen)
     {
         $this->authorize('update', $dosen);
+
+        if (! request()->wantsJson()) {
+            return view('admin.dosen.edit', compact('dosen'));
+        }
 
         return response()->json(['data' => $dosen]);
     }

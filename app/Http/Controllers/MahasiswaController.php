@@ -25,6 +25,10 @@ class MahasiswaController extends Controller
     {
         $this->authorize('create', User::class);
 
+        if (! request()->wantsJson()) {
+            return view('admin.mahasiswa.create');
+        }
+
         return response()->json(['data' => null]);
     }
 
@@ -40,6 +44,10 @@ class MahasiswaController extends Controller
     public function edit(User $mahasiswa)
     {
         $this->authorize('update', $mahasiswa);
+
+        if (! request()->wantsJson()) {
+            return view('admin.mahasiswa.edit', compact('mahasiswa'));
+        }
 
         return response()->json(['data' => $mahasiswa]);
     }
@@ -65,6 +73,13 @@ class MahasiswaController extends Controller
     public function courses(User $mahasiswa)
     {
         $this->authorize('viewCourses', $mahasiswa);
+
+        if (! request()->wantsJson()) {
+            return view('admin.mahasiswa.courses', [
+                'mahasiswa' => $mahasiswa,
+                'courses' => $this->service->courses($mahasiswa),
+            ]);
+        }
 
         return response()->json([
             'data' => $this->service->courses($mahasiswa),

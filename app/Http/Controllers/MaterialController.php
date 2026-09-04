@@ -21,6 +21,13 @@ class MaterialController extends Controller
         return response()->json(['data' => $this->service->getByCourse($course)]);
     }
 
+    public function mahasiswaIndex()
+    {
+        $courses = request()->user()->enrolledCourses()->with(['materials' => fn($query) => $query->latest()])->get();
+
+        return view('mahasiswa.materials.index', compact('courses'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -68,6 +75,11 @@ class MaterialController extends Controller
     {
         abort_unless((int) $material->course_id === (int) $course->id, 404);
         $this->authorize('update', $material);
+
+        if (! request()->wantsJson()) {
+            return view('dosen.materials.edit', compact('course', 'material'));
+        }
+
         return response()->json(['data' => $material]);
     }
 

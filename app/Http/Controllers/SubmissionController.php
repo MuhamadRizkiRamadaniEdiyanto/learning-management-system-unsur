@@ -12,6 +12,11 @@ class SubmissionController extends Controller
 {
     public function __construct(private SubmissionService $service) {}
 
+    public function dosenIndex()
+    {
+        return view('dosen.submissions.index');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -63,6 +68,11 @@ class SubmissionController extends Controller
     {
         abort_unless((int) $submission->assignment_id === (int) $assignment->id, 404);
         $this->authorize('view', $submission);
+
+        if (! request()->wantsJson()) {
+            return view('dosen.submissions.show', compact('assignment', 'submission'));
+        }
+
         return response()->json(['data' => $this->service->findById($submission->id)]);
     }
 
@@ -110,7 +120,7 @@ class SubmissionController extends Controller
     {
         abort_unless((int) $submission->assignment_id === (int) $assignment->id, 404);
         $this->authorize('grade', $submission);
-        $graded = $this->service->grade($submission, $request->validated('nilai'));
+        $graded = $this->service->grade($submission, $request->validated('nilai'), $request->validated('feedback'));
         return response()->json(['message' => 'Submission berhasil dinilai.', 'data' => $graded]);
     }
 }

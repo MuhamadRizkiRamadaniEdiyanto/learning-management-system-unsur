@@ -31,6 +31,10 @@ class StoreSubmissionRequest extends FormRequest
         $validator->after(function (Validator $validator): void {
             $assignment = $this->route('assignment');
 
+            if ($assignment instanceof Assignment && $this->user()?->id && $assignment->submissions()->where('user_id', $this->user()->id)->exists()) {
+                $validator->errors()->add('file_jawaban', 'Anda sudah mengumpulkan tugas ini. Gunakan fitur perbarui submission.');
+            }
+
             if ($assignment instanceof Assignment && now()->greaterThan($assignment->tenggat_waktu)) {
                 $validator->errors()->add('file_jawaban', 'Tenggat waktu tugas sudah lewat.');
             }

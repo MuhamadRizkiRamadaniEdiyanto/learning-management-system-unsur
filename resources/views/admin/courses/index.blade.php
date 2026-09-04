@@ -88,8 +88,8 @@
                 <div class="flex gap-3 justify-end">
                     <button type="button" @click="showCreateForm = false; showEditForm = false"
                         class="px-4 py-2 text-gray-700 border border-gray-300 rounded hover:bg-gray-50">Batal</button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">{{ editingId ? 'Update' : 'Tambah' }}</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        x-text="editingId ? 'Update' : 'Tambah'"></button>
                 </div>
             </form>
         </div>
@@ -114,7 +114,7 @@
             const tbody = document.getElementById('courses-tbody');
             if (courses.length === 0) {
                 tbody.innerHTML =
-                '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td></tr>';
+                    '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td></tr>';
                 return;
             }
 

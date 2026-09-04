@@ -14,7 +14,8 @@ class Submission extends Model
         'assignment_id',
         'user_id',
         'file_jawaban', // Path lokasi file tugas yang diupload mahasiswa
-        'nilai'         // Nilai yang akan diisi oleh Dosen
+        'nilai',        // Nilai yang akan diisi oleh Dosen
+        'feedback',     // Umpan balik dari Dosen
     ];
 
     /**

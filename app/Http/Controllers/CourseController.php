@@ -30,6 +30,10 @@ class CourseController extends Controller
             $courses = $this->service->getByMahasiswa((int) $user->id);
         }
 
+        if (! $request->wantsJson() && $user->role === 'admin') {
+            return view('admin.courses.index');
+        }
+
         return response()->json(['data' => $courses]);
     }
 
@@ -39,6 +43,11 @@ class CourseController extends Controller
     public function create()
     {
         $this->authorize('create', Course::class);
+
+        if (! request()->wantsJson()) {
+            return view('admin.courses.create', ['dosens' => User::where('role', 'dosen')->orderBy('name')->get()]);
+        }
+
         return response()->json(['data' => null]);
     }
 
@@ -49,6 +58,11 @@ class CourseController extends Controller
     {
         $this->authorize('create', Course::class);
         $course = $this->service->create($request->validated(), (int) $request->user()->id, $request->user()->role);
+
+        if (! $request->wantsJson()) {
+            return redirect()->route('admin.courses.index')->with('success', 'Course berhasil dibuat.');
+        }
+
         return response()->json(['message' => 'Course berhasil dibuat.', 'data' => $course], 201);
     }
 
@@ -67,6 +81,14 @@ class CourseController extends Controller
     public function edit(Course $course)
     {
         $this->authorize('update', $course);
+
+        if (! request()->wantsJson()) {
+            return view('admin.courses.edit', [
+                'course' => $course,
+                'dosens' => User::where('role', 'dosen')->orderBy('name')->get(),
+            ]);
+        }
+
         return response()->json(['data' => $course]);
     }
 

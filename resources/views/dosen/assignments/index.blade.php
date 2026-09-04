@@ -90,14 +90,14 @@
         let allCourses = [];
 
         function loadCourses() {
-            fetch("{{ route('admin.courses.index') }}", {
+            fetch("{{ route('courses.index') }}", {
                     headers: {
                         'Accept': 'application/json'
                     }
                 })
                 .then(r => r.json())
                 .then(data => {
-                    allCourses = data.data.data || [];
+                    allCourses = data.data.data || data.data || [];
 
                     const filter = document.getElementById('course-filter');
                     const select = document.getElementById('assignment-course');
@@ -123,7 +123,7 @@
             const courseId = document.getElementById('course-filter').value;
             const endpoint = courseId ?
                 `{{ url('courses') }}/${courseId}/assignments` :
-                '{{ url('courses') }}/assignments';
+                '{{ route('dosen.assignments.index') }}';
 
             fetch(endpoint, {
                     headers: {

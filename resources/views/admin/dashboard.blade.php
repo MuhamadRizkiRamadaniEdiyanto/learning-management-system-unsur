@@ -179,8 +179,8 @@
 
         function approveUser(userId, role) {
             const endpoint = role === 'dosen' ?
-                `{{ route('admin.dosen.approve', '') }}/${userId}` :
-                `{{ route('admin.mahasiswa.approve', '') }}/${userId}`;
+                `{{ url('admin/dosen') }}/${userId}/approve` :
+                `{{ url('admin/mahasiswa') }}/${userId}/approve`;
 
             fetch(endpoint, {
                     method: 'PATCH',
@@ -202,8 +202,8 @@
 
         function rejectUser(userId, role) {
             const endpoint = role === 'dosen' ?
-                `{{ route('admin.dosen.reject', '') }}/${userId}` :
-                `{{ route('admin.mahasiswa.reject', '') }}/${userId}`;
+                `{{ url('admin/dosen') }}/${userId}/reject` :
+                `{{ url('admin/mahasiswa') }}/${userId}/reject`;
 
             fetch(endpoint, {
                     method: 'PATCH',

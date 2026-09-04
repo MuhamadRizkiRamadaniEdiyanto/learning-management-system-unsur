@@ -1,0 +1,112 @@
+
+  GET|HEAD        / ........................................ routes/web.php:12
+  GET|HEAD        admin/courses . admin.courses.index ΓÇ║ CourseController@index
+  POST            admin/courses . admin.courses.store ΓÇ║ CourseController@store
+  GET|HEAD        admin/courses/create admin.courses.create ΓÇ║ CourseControlleΓÇª
+  PUT|PATCH       admin/courses/{course} admin.courses.update ΓÇ║ CourseControlΓÇª
+  DELETE          admin/courses/{course} admin.courses.destroy ΓÇ║ CourseControΓÇª
+  PATCH           admin/courses/{course}/assign-dosen admin.courses.assign-doΓÇª
+  GET|HEAD        admin/courses/{course}/edit admin.courses.edit ΓÇ║ CourseContΓÇª
+  GET|HEAD        admin/dashboard admin.dashboard ΓÇ║ AdminDashboardController@ΓÇª
+  GET|HEAD        admin/dosen ...... admin.dosen.index ΓÇ║ DosenController@index
+  POST            admin/dosen ...... admin.dosen.store ΓÇ║ DosenController@store
+  GET|HEAD        admin/dosen/create admin.dosen.create ΓÇ║ DosenController@creΓÇª
+  GET|HEAD        admin/dosen/{dosen} admin.dosen.show ΓÇ║ DosenController@show
+  PUT|PATCH       admin/dosen/{dosen} admin.dosen.update ΓÇ║ DosenController@upΓÇª
+  DELETE          admin/dosen/{dosen} admin.dosen.destroy ΓÇ║ DosenController@dΓÇª
+  PATCH           admin/dosen/{dosen}/approve admin.dosen.approve ΓÇ║ DosenContΓÇª
+  GET|HEAD        admin/dosen/{dosen}/edit admin.dosen.edit ΓÇ║ DosenControllerΓÇª
+  PATCH           admin/dosen/{dosen}/reject admin.dosen.reject ΓÇ║ DosenControΓÇª
+  GET|HEAD        admin/mahasiswa admin.mahasiswa.index ΓÇ║ MahasiswaControllerΓÇª
+  POST            admin/mahasiswa admin.mahasiswa.store ΓÇ║ MahasiswaControllerΓÇª
+  GET|HEAD        admin/mahasiswa/create admin.mahasiswa.create ΓÇ║ MahasiswaCoΓÇª
+  GET|HEAD        admin/mahasiswa/{mahasiswa} admin.mahasiswa.show ΓÇ║ MahasiswΓÇª
+  PUT|PATCH       admin/mahasiswa/{mahasiswa} admin.mahasiswa.update ΓÇ║ MahasiΓÇª
+  DELETE          admin/mahasiswa/{mahasiswa} admin.mahasiswa.destroy ΓÇ║ MahasΓÇª
+  PATCH           admin/mahasiswa/{mahasiswa}/approve admin.mahasiswa.approveΓÇª
+  GET|HEAD        admin/mahasiswa/{mahasiswa}/courses admin.mahasiswa.coursesΓÇª
+  GET|HEAD        admin/mahasiswa/{mahasiswa}/edit admin.mahasiswa.edit ΓÇ║ MahΓÇª
+  PATCH           admin/mahasiswa/{mahasiswa}/reject admin.mahasiswa.reject  ΓÇª
+  GET|HEAD        admin/reports . admin.reports.index ΓÇ║ ReportController@index
+  GET|HEAD        admin/reports/activity-summary admin.reports.activity-summaΓÇª
+  GET|HEAD        admin/reports/beban-mengajar admin.reports.beban-mengajar  ΓÇª
+  GET|HEAD        admin/reports/mahasiswa-per-matkul admin.reports.mahasiswa-ΓÇª
+  GET|HEAD        admin/reports/nilai-per-matkul/{course} admin.reports.nilaiΓÇª
+  GET|HEAD        admin/reports/pengumpulan-tugas/{assignment} admin.reports.ΓÇª
+  GET|HEAD        admin/reports/{jenis}/export admin.reports.export ΓÇ║ ReportCΓÇª
+  GET|HEAD        admin/schedules admin.schedules.index ΓÇ║ ScheduleController@ΓÇª
+  POST            admin/schedules admin.schedules.store ΓÇ║ ScheduleController@ΓÇª
+  GET|HEAD        admin/schedules/create admin.schedules.create ΓÇ║ ScheduleConΓÇª
+  GET|HEAD        admin/schedules/{schedule} admin.schedules.show ΓÇ║ ScheduleCΓÇª
+  PUT|PATCH       admin/schedules/{schedule} admin.schedules.update ΓÇ║ SchedulΓÇª
+  DELETE          admin/schedules/{schedule} admin.schedules.destroy ΓÇ║ ScheduΓÇª
+  GET|HEAD        admin/schedules/{schedule}/edit admin.schedules.edit ΓÇ║ ScheΓÇª
+  GET|HEAD        assignments/{assignment}/submissions assignments.submissionΓÇª
+  POST            assignments/{assignment}/submissions assignments.submissionΓÇª
+  GET|HEAD        assignments/{assignment}/submissions/create assignments.subΓÇª
+  GET|HEAD        assignments/{assignment}/submissions/{submission} assignmenΓÇª
+  PUT|PATCH       assignments/{assignment}/submissions/{submission} assignmenΓÇª
+  DELETE          assignments/{assignment}/submissions/{submission} assignmenΓÇª
+  GET|HEAD        assignments/{assignment}/submissions/{submission}/download ΓÇª
+  GET|HEAD        assignments/{assignment}/submissions/{submission}/edit assiΓÇª
+  POST            assignments/{assignment}/submissions/{submission}/grade assΓÇª
+  GET|HEAD        confirm-password password.confirm ΓÇ║ Auth\ConfirmablePassworΓÇª
+  POST            confirm-password .. Auth\ConfirmablePasswordController@store
+  GET|HEAD        courses ............. courses.index ΓÇ║ CourseController@index
+  GET|HEAD        courses/{course} ...... courses.show ΓÇ║ CourseController@show
+  PUT|PATCH       courses/{course} .. courses.update ΓÇ║ CourseController@update
+  GET|HEAD        courses/{course}/assignments courses.assignments.index ΓÇ║ AsΓÇª
+  POST            courses/{course}/assignments courses.assignments.store ΓÇ║ AsΓÇª
+  GET|HEAD        courses/{course}/assignments/create courses.assignments.creΓÇª
+  GET|HEAD        courses/{course}/assignments/{assignment} courses.assignmenΓÇª
+  PUT|PATCH       courses/{course}/assignments/{assignment} courses.assignmenΓÇª
+  DELETE          courses/{course}/assignments/{assignment} courses.assignmenΓÇª
+  GET|HEAD        courses/{course}/assignments/{assignment}/edit courses.assiΓÇª
+  GET|HEAD        courses/{course}/edit . courses.edit ΓÇ║ CourseController@edit
+  POST            courses/{course}/enroll courses.enroll ΓÇ║ CourseController@eΓÇª
+  DELETE          courses/{course}/enroll/{user} courses.unenroll ΓÇ║ CourseConΓÇª
+  GET|HEAD        courses/{course}/materials courses.materials.index ΓÇ║ MateriΓÇª
+  POST            courses/{course}/materials courses.materials.store ΓÇ║ MateriΓÇª
+  GET|HEAD        courses/{course}/materials/create courses.materials.create ΓÇª
+  GET|HEAD        courses/{course}/materials/{material} courses.materials.shoΓÇª
+  PUT|PATCH       courses/{course}/materials/{material} courses.materials.updΓÇª
+  DELETE          courses/{course}/materials/{material} courses.materials.desΓÇª
+  GET|HEAD        courses/{course}/materials/{material}/download courses.mateΓÇª
+  GET|HEAD        courses/{course}/materials/{material}/edit courses.materialΓÇª
+  GET|HEAD        courses/{course}/messages courses.messages.index ΓÇ║ MessageCΓÇª
+  POST            courses/{course}/messages courses.messages.store ΓÇ║ MessageCΓÇª
+  GET|HEAD        dashboard .................... dashboard ΓÇ║ routes/web.php:16
+  GET|HEAD        dosen/assignments dosen.assignments.index ΓÇ║ AssignmentContrΓÇª
+  GET|HEAD        dosen/dashboard dosen.dashboard ΓÇ║ DosenDashboardController@ΓÇª
+  GET|HEAD        dosen/materials dosen.materials.index ΓÇ║ MaterialController@ΓÇª
+  GET|HEAD        dosen/messages dosen.messages.index ΓÇ║ MessageController@dosΓÇª
+  GET|HEAD        dosen/submissions dosen.submissions.index ΓÇ║ SubmissionContrΓÇª
+  POST            email/verification-notification verification.send ΓÇ║ Auth\EmΓÇª
+  GET|HEAD        forgot-password password.request ΓÇ║ Auth\PasswordResetLinkCoΓÇª
+  POST            forgot-password password.email ΓÇ║ Auth\PasswordResetLinkContΓÇª
+  GET|HEAD        login ... login ΓÇ║ Auth\AuthenticatedSessionController@create
+  POST            login ............ Auth\AuthenticatedSessionController@store
+  POST            logout logout ΓÇ║ Auth\AuthenticatedSessionController@destroy
+  GET|HEAD        mahasiswa/assignments mahasiswa.assignments.index ΓÇ║ routes/ΓÇª
+  GET|HEAD        mahasiswa/courses mahasiswa.courses.index ΓÇ║ routes/web.php:ΓÇª
+  GET|HEAD        mahasiswa/dashboard mahasiswa.dashboard ΓÇ║ MahasiswaDashboarΓÇª
+  GET|HEAD        mahasiswa/materials mahasiswa.materials.index ΓÇ║ routes/web.ΓÇª
+  GET|HEAD        mahasiswa/messages mahasiswa.messages.index ΓÇ║ routes/web.phΓÇª
+  GET|HEAD        mahasiswa/submissions mahasiswa.submissions ΓÇ║ SubmissionConΓÇª
+  PUT             password .. password.update ΓÇ║ Auth\PasswordController@update
+  GET|HEAD        profile .............. profile.edit ΓÇ║ ProfileController@edit
+  PATCH           profile .......... profile.update ΓÇ║ ProfileController@update
+  DELETE          profile ........ profile.destroy ΓÇ║ ProfileController@destroy
+  POST            profile/photo profile.upload-photo ΓÇ║ ProfileController@uploΓÇª
+  GET|HEAD        register ... register ΓÇ║ Auth\RegisteredUserController@create
+  POST            register ............... Auth\RegisteredUserController@store
+  POST            reset-password password.store ΓÇ║ Auth\NewPasswordController@ΓÇª
+  GET|HEAD        reset-password/{token} password.reset ΓÇ║ Auth\NewPasswordConΓÇª
+  GET|HEAD        storage/{path} storage.local ΓÇ║ vendor/laravel/framework/srcΓÇª
+  PUT             storage/{path} storage.local.upload ΓÇ║ vendor/laravel/framewΓÇª
+  GET|HEAD        up vendor/laravel/framework/src/Illuminate/Foundation/ConfiΓÇª
+  GET|HEAD        verify-email verification.notice ΓÇ║ Auth\EmailVerificationPrΓÇª
+  GET|HEAD        verify-email/{id}/{hash} verification.verify ΓÇ║ Auth\VerifyEΓÇª
+
+                                                          Showing [108] routes
+

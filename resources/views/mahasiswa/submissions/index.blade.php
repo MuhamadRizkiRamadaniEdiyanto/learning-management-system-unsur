@@ -70,9 +70,13 @@
                                 <div class="flex shrink-0 items-center gap-3">
                                     <span
                                         class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">Terkirim</span>
+                                    <span class="text-sm font-semibold text-slate-700"
+                                        x-text="submission.nilai !== null ? `Nilai: ${submission.nilai}` : 'Belum dinilai'"></span>
                                     <time class="text-xs text-slate-400"
                                         x-text="formatDate(submission.created_at)"></time>
                                 </div>
+                                <p x-show="submission.feedback" class="text-xs text-slate-500 sm:col-span-2"
+                                    x-text="`Feedback: ${submission.feedback}`"></p>
                             </article>
                         </template>
                     </div>

@@ -17,7 +17,9 @@ class SubmissionPolicy
     public function view(User $user, Submission $submission): bool
     {
         return $this->ownsAssignment($user, $submission->assignment)
-            || ($user->role === 'mahasiswa' && (int) $submission->user_id === (int) $user->id);
+            || ($user->role === 'mahasiswa'
+                && (int) $submission->user_id === (int) $user->id
+                && $this->enrolled($user, $submission->assignment));
     }
 
     public function create(User $user, Assignment $assignment): bool
